@@ -41,7 +41,7 @@ export class AwsRdsOracleNneStack extends cdk.Stack {
 
     const secret = new Secret(this, 'oracleDbSecret', {
       secretName: databaseName,
-      description: `${databaseName} secret`,
+      description: `${databaseName} Database Secret`,
       generateSecretString: {
         secretStringTemplate: JSON.stringify({
           username
@@ -55,9 +55,9 @@ export class AwsRdsOracleNneStack extends cdk.Stack {
     const engine = DatabaseInstanceEngine.oracleSe2({version: OracleEngineVersion.VER_19_0_0_0_2023_10_R1});
     
     // Oracle NNE Specific configurations
-    const optionGroup = new OptionGroup(this, 'oracle-og', {
+    const optionGroup = new OptionGroup(this, 'oracle-nne-og', {
       engine,
-      description: 'Oracle NNE setup',
+      description: 'Oracle NNE Options Setup',
       configurations: [{
         name: 'NATIVE_NETWORK_ENCRYPTION',
         settings: {
@@ -108,7 +108,7 @@ export class AwsRdsOracleNneStack extends cdk.Stack {
         containerPort: 8080,
         hostPort: 8080
       }],
-      logging: LogDrivers.awsLogs({streamPrefix: 'my-rds-oracle-tls-service'}),
+      logging: LogDrivers.awsLogs({streamPrefix: 'my-rds-oracle-nne-service'}),
       secrets: {
         DB_HOST: escSecret.fromSecretsManager(secret, 'host'),
         DB_PORT: escSecret.fromSecretsManager(secret, 'port'),
@@ -118,7 +118,7 @@ export class AwsRdsOracleNneStack extends cdk.Stack {
       }
     });
 
-    const ecsService = new FargateService(this, 'Service', {
+    const ecsService = new FargateService(this, 'nne-service', {
       cluster,
       taskDefinition,
       desiredCount: 1
@@ -135,7 +135,7 @@ export class AwsRdsOracleNneStack extends cdk.Stack {
       port: 80
     });
 
-    listener.addTargets('e2e-target', {
+    listener.addTargets('alb-target', {
       port: 80,
       targets: [ecsService],
       protocol: ApplicationProtocol.HTTP,
@@ -149,7 +149,7 @@ export class AwsRdsOracleNneStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, 'alb-url', {
       value: alb.loadBalancerDnsName,
-      exportName: 'rds-oracle-tls-stack-loadBalancerDnsName'
+      exportName: 'rds-oracle-nne-stack-loadBalancerDnsName'
     });
         
   }
