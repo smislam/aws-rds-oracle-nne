@@ -6,7 +6,7 @@ This project is deployed using AWS CDK in TypeScript.
 
 ## What does it build?
 * Creates a VPC with Private Endpoints for Database.  This is required to route database traffic within AWS network.
-* Creates an AWS RDS Oracle Database with NNE enabled
+* Creates an AWS RDS Oracle Database (version 19) with NNE enabled
 * Creates a Spring Boot application that connects to that Database
 * Dockerizes the application
 * Deployes the containerized application to ECS Cluster
@@ -18,7 +18,7 @@ This project is deployed using AWS CDK in TypeScript.
 
 ## NNE Considerations
 * Details about Oracle NNE. [See AWS Docs](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Oracle.Concepts.NNE.html).
-* You must upgrade JDBC Driver to latest 23 version for NNE to disable weak Cryptos.  Disabling weak cryptos provideds better security.  Ity also is not backwards compatible. [See Oracle Docs](https://docs.oracle.com/en/database/oracle/oracle-database/19/jajdb/oracle/jdbc/OracleConnection.html#CONNECTION_PROPERTY_THIN_NET_ALLOW_WEAK_CRYPTO)
+* You must upgrade JDBC Driver to latest 23 version for NNE to disable weak Cryptos.  Disabling weak cryptos provides better security.  Ity also is not backwards compatible. [See Oracle Docs](https://docs.oracle.com/en/database/oracle/oracle-database/19/jajdb/oracle/jdbc/OracleConnection.html#CONNECTION_PROPERTY_THIN_NET_ALLOW_WEAK_CRYPTO)
 * You can find the NNE configuration properties on Oracle's documentation.  [Oracle NNE Properties](https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/configuring-network-data-encryption-and-integrity.html#GUID-7F12066A-2BA1-476C-809B-BB95A3F727CF)
 * Setting the JDBC connect parameters to encryption required and matched types will enforce the client to use encrypted connection.  Please review the Spring Boot Configurations included in this project.
 * All connections from the service to the database is using Private Endpoints to keep network connection within AWS network.
