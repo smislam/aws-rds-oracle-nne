@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: RdsTls
+  datasource: 
+    url: jdbc:oracle:thin:@//${DB_HOST}:${DB_PORT}/${DB_NAME}?encryption_client=required&encryption_types_client=AES256
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.OracleDialect
