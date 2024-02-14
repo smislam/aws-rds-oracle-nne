@@ -62,14 +62,8 @@ export class AwsRdsOracleNneStack extends cdk.Stack {
         name: 'NATIVE_NETWORK_ENCRYPTION',
         settings: {
           'SQLNET.ALLOW_WEAK_CRYPTO': 'FALSE',
-          'SQLNET.ALLOW_WEAK_CRYPTO_CLIENTS': 'FALSE',
-          'SQLNET.CRYPTO_CHECKSUM_CLIENT': 'REQUIRED',
           'SQLNET.CRYPTO_CHECKSUM_SERVER': 'REQUIRED',
-          'SQLNET.CRYPTO_CHECKSUM_TYPES_CLIENT': 'SHA256',
-          'SQLNET.CRYPTO_CHECKSUM_TYPES_SERVER': 'SHA256',
-          'SQLNET.ENCRYPTION_TYPES_CLIENT': 'AES256',
           'SQLNET.ENCRYPTION_TYPES_SERVER': 'AES256',
-          'SQLNET.ENCRYPTION_CLIENT': 'REQUIRED',
           'SQLNET.ENCRYPTION_SERVER': 'REQUIRED',
         }
       }]
@@ -89,7 +83,8 @@ export class AwsRdsOracleNneStack extends cdk.Stack {
       storageEncrypted: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       backupRetention: cdk.Duration.millis(0),
-      optionGroup
+      optionGroup,
+      caCertificate: CaCertificate.RDS_CA_RDS4096_G1
     });
     
     dbInstance.node.addDependency(optionGroup);
